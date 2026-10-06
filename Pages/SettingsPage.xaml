@@ -1,0 +1,681 @@
+﻿<!--
+  Craft Unified Booter (CUB)
+  Copyright (c) 2026 方块筑界 (Craft Unified Booter Project). 保留所有权利。
+  SPDX-License-Identifier: LicenseRef-Proprietary
+  本文件仅限阅读与借鉴，禁止复制、克隆、使用与分发，详见根目录下的 LICENSE 文件。
+-->
+
+<UserControl x:Class="CraftUnifiedBooter.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- ==================== lucide 描边图标 (24x24 视口) ==================== -->
+        <Geometry x:Key="IconCpu">M4 4H20A2 2 0 0 1 22 6V18A2 2 0 0 1 20 20H4A2 2 0 0 1 2 18V6A2 2 0 0 1 4 4Z M9 9H15V15H9Z M15 2V4 M15 20V22 M2 15H4 M2 9H4 M20 15H22 M20 9H22 M9 2V4 M9 20V22</Geometry>
+        <Geometry x:Key="IconHardDrive">M2 12H22 M5.45 5.11L2 12V18A2 2 0 0 0 4 20H20A2 2 0 0 0 22 18V12L18.55 5.11A2 2 0 0 0 16.76 4H7.24A2 2 0 0 0 5.45 5.11Z M6 16H6.01 M10 16H10.01</Geometry>
+        <Geometry x:Key="IconMonitor">M4 3H20A2 2 0 0 1 22 5V15A2 2 0 0 1 20 17H4A2 2 0 0 1 2 15V5A2 2 0 0 1 4 3Z M8 21H16 M12 17V21</Geometry>
+        <Geometry x:Key="IconFolderOpen">M6 14L7.45 11.1A2 2 0 0 1 9.24 10H20A2 2 0 0 1 21.94 12.5L20.39 18.5A2 2 0 0 1 18.45 20H4A2 2 0 0 1 2 18V5A2 2 0 0 1 4 3H7.93A2 2 0 0 1 9.59 3.9L10.41 5.1A2 2 0 0 0 12.07 6H18A2 2 0 0 1 20 8V10</Geometry>
+        <Geometry x:Key="IconSparkles">M9.937 15.5A2 2 0 0 0 8.5 14.063L2.365 12.481A0.5 0.5 0 0 1 2.365 11.519L8.5 9.936A2 2 0 0 0 9.937 8.5L11.519 2.365A0.5 0.5 0 0 1 12.481 2.365L14.064 8.5A2 2 0 0 0 15.5 9.937L21.635 11.518A0.5 0.5 0 0 1 21.635 12.482L15.5 14.064A2 2 0 0 0 14.064 15.5L12.482 21.635A0.5 0.5 0 0 1 11.518 21.635Z M20 3V7 M22 5H18 M4 17V19 M5 18H3</Geometry>
+        <Geometry x:Key="IconSliders">M21 4H14 M10 4H3 M21 12H12 M8 12H3 M21 20H16 M12 20H3 M14 2V6 M8 10V14 M16 18V22</Geometry>
+        <Geometry x:Key="IconRotateCcw">M3 12A9 9 0 1 0 12 3A9.75 9.75 0 0 0 5.26 5.74L3 8 M3 3V8H8</Geometry>
+        <Geometry x:Key="IconRefreshCw">M3 12A9 9 0 0 1 12 3A9.75 9.75 0 0 1 18.74 5.74L21 8 M21 3V8H16 M21 12A9 9 0 0 1 12 21A9.75 9.75 0 0 1 5.26 18.26L3 16 M8 16H3V21</Geometry>
+        <Geometry x:Key="IconCheckCircle">M2 12A10 10 0 1 1 22 12A10 10 0 1 1 2 12Z M9 12L11 14L15 10</Geometry>
+
+        <!-- ==================== 按钮样式 ==================== -->
+        <Style x:Key="PrimaryBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius12}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1E40AF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GrayBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F3F4F6" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius12}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E5E7EB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextLinkBtnStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="Center" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ==================== 输入框样式 (带占位提示) ==================== -->
+        <Style x:Key="InputBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Background" Value="#F3F4F6" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Tag" Value="" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="InpBd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource Radius12}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <TextBlock x:Name="Hint" Text="{TemplateBinding Tag}"
+                                           Foreground="#9CA3AF" FontSize="13"
+                                           Margin="{TemplateBinding Padding}"
+                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                           IsHitTestVisible="False" Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="InpBd" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                <Setter TargetName="Hint" Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextAreaStyle" TargetType="TextBox" BasedOn="{StaticResource InputBoxStyle}">
+            <Setter Property="Height" Value="80" />
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+            <Setter Property="Padding" Value="12,8" />
+        </Style>
+
+        </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                  Background="{DynamicResource PageBackground}">
+        <StackPanel Margin="24,24,24,24">
+
+            <TextBlock Text="设置" FontSize="20" FontWeight="Bold" Foreground="#111827" />
+
+            <!-- ==================== 1. Java 设置 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconCpu}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="Java 设置" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- 自动选择开关 -->
+                        <Border Background="{DynamicResource AccentSoftBrush}" BorderBrush="{DynamicResource AccentLightBrush}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius8}" Padding="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="自动选择 Java" FontSize="13" FontWeight="Medium"
+                                               Foreground="{DynamicResource AccentDarkBrush}" />
+                                    <TextBlock Text="根据游戏版本自动切换：1.20.5+→Java21, 1.18~1.20.4→Java17, 1.17→Java16, 1.16.5-→Java8"
+                                               FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                                <Border x:Name="ToggleAutoJava" Grid.Column="1" Width="42" Height="24"
+                                        CornerRadius="{DynamicResource RadiusPill}" Background="{DynamicResource AccentBrush}" Cursor="Hand"
+                                        MouseLeftButtonDown="ToggleAutoJava_Click" VerticalAlignment="Center">
+                                    <Ellipse x:Name="KnobAutoJava" Width="18" Height="18" Fill="White"
+                                             HorizontalAlignment="Left" Margin="3,0,0,0">
+                                        <Ellipse.RenderTransform>
+                                            <TranslateTransform x:Name="TransAutoJava" X="20" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- 手动设置区域 (关闭自动选择时显示) -->
+                        <StackPanel x:Name="JavaManualArea" Visibility="Collapsed" Margin="0,12,0,0">
+                            <TextBlock Text="Java 路径" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="JavaPathBox" Style="{StaticResource InputBoxStyle}"
+                                       Tag="选择 Java 可执行文件路径..." />
+                                <Button Grid.Column="1" Style="{StaticResource GrayBtnStyle}"
+                                        Content="浏览" Margin="8,0,0,0" Click="JavaBrowse_Click" />
+                                <Button Grid.Column="2" Style="{StaticResource PrimaryBtnStyle}"
+                                        Content="自动检测" Margin="8,0,0,0" Click="JavaAutoDetect_Click" />
+                            </Grid>
+
+                            <!-- 检测结果 -->
+                            <Border x:Name="JavaVerifyPanel" Background="#F0FDF4" BorderBrush="#DCFCE7"
+                                    BorderThickness="1" CornerRadius="{DynamicResource Radius8}" Padding="12" Margin="0,12,0,0"
+                                    Visibility="Collapsed">
+                                <TextBlock x:Name="JavaVerifyText" Text="有效 - Java 21 / 64 位" FontSize="13"
+                                           Foreground="#15803D" TextWrapping="Wrap" />
+                            </Border>
+
+                            <Button Style="{StaticResource TextLinkBtnStyle}" Content="验证 Java 路径"
+                                    Margin="0,10,0,0" HorizontalAlignment="Left" Click="JavaVerify_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 2. 内存设置 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconHardDrive}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="#8B5CF6" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="内存设置" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- 自动分配开关 -->
+                    <Border Background="{DynamicResource AccentSoftBrush}" BorderBrush="{DynamicResource AccentLightBrush}" BorderThickness="1"
+                            CornerRadius="{DynamicResource Radius8}" Padding="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="自动分配内存" FontSize="13" FontWeight="Medium"
+                                           Foreground="{DynamicResource AccentDarkBrush}" />
+                                <TextBlock Text="根据系统内存自动计算：分配 60%，上限 8GB，下限 2GB"
+                                           FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <Border x:Name="ToggleAutoMemory" Grid.Column="1" Width="42" Height="24"
+                                    CornerRadius="{DynamicResource RadiusPill}" Background="{DynamicResource AccentBrush}" Cursor="Hand"
+                                    MouseLeftButtonDown="ToggleAutoMemory_Click" VerticalAlignment="Center">
+                                <Ellipse Width="18" Height="18" Fill="White"
+                                         HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="TransAutoMemory" X="20" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- 手动滑块区域 (关闭自动分配时显示) -->
+                    <StackPanel x:Name="MemManualArea" Visibility="Collapsed" Margin="0,16,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="MinMemLabel" Text="最小内存: 2048 MB"
+                                           FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                                <Slider x:Name="MinMemSlider" Minimum="512" Maximum="16384"
+                                        SmallChange="256" LargeChange="1024" Value="2048"
+                                        Style="{StaticResource SliderStyle}"
+                                        ValueChanged="MinMemSlider_ValueChanged" />
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="512 MB" FontSize="12" Foreground="#9CA3AF" />
+                                    <TextBlock Grid.Column="1" Text="16 GB" FontSize="12" Foreground="#9CA3AF" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock x:Name="MaxMemLabel" Text="最大内存: 4096 MB"
+                                           FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                                <Slider x:Name="MaxMemSlider" Minimum="512" Maximum="32768"
+                                        SmallChange="256" LargeChange="1024" Value="4096"
+                                        Style="{StaticResource SliderStyle}"
+                                        ValueChanged="MaxMemSlider_ValueChanged" />
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="512 MB" FontSize="12" Foreground="#9CA3AF" />
+                                    <TextBlock Grid.Column="1" Text="32 GB" FontSize="12" Foreground="#9CA3AF" />
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="推荐: 原版 2048 MB, 带 Mod 4096-8192 MB"
+                                   FontSize="12" Foreground="#9CA3AF" Margin="0,12,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 3. 游戏设置 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconMonitor}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="#22C55E" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="游戏设置" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- 窗口宽度 / 高度 -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="窗口宽度" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                                <TextBox x:Name="WidthBox" Style="{StaticResource InputBoxStyle}" Text="854" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="窗口高度" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                                <TextBox x:Name="HeightBox" Style="{StaticResource InputBoxStyle}" Text="480" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- 预设分辨率 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <Border x:Name="Preset854" Background="{DynamicResource AccentSoftBrush}" CornerRadius="{DynamicResource Radius8}"
+                                    Padding="12,5" Cursor="Hand" MouseLeftButtonDown="Preset_Click" Tag="854,480">
+                                <TextBlock Text="854x480" FontSize="12" Foreground="{DynamicResource AccentDarkBrush}" />
+                            </Border>
+                            <Border x:Name="Preset1280" Background="#F3F4F6" CornerRadius="{DynamicResource Radius8}"
+                                    Padding="12,5" Cursor="Hand" Margin="8,0,0,0"
+                                    MouseLeftButtonDown="Preset_Click" Tag="1280,720">
+                                <TextBlock Text="1280x720" FontSize="12" Foreground="#4B5563" />
+                            </Border>
+                            <Border x:Name="Preset1920" Background="#F3F4F6" CornerRadius="{DynamicResource Radius8}"
+                                    Padding="12,5" Cursor="Hand" Margin="8,0,0,0"
+                                    MouseLeftButtonDown="Preset_Click" Tag="1920,1080">
+                                <TextBlock Text="1920x1080" FontSize="12" Foreground="#4B5563" />
+                            </Border>
+                        </StackPanel>
+
+                        <!-- 全屏模式 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                            <TextBlock Text="全屏模式" FontSize="13" Foreground="#4B5563"
+                                       VerticalAlignment="Center" />
+                            <Border x:Name="ToggleFullscreen" Width="42" Height="24" CornerRadius="{DynamicResource RadiusPill}"
+                                    Background="#D1D5DB" Cursor="Hand" Margin="12,0,0,0"
+                                    MouseLeftButtonDown="ToggleFullscreen_Click" VerticalAlignment="Center">
+                                <Ellipse Width="18" Height="18" Fill="White"
+                                         HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="TransFullscreen" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- 高级模式 -->
+                        <Border Background="{DynamicResource AccentSoftBrush}" BorderBrush="{DynamicResource AccentLightBrush}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius8}" Padding="12" Margin="0,16,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="高级模式" FontSize="13" FontWeight="Medium"
+                                               Foreground="{DynamicResource AccentDarkBrush}" />
+                                    <TextBlock Text="显示 JVM 参数等进阶选项" FontSize="12"
+                                               Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                                <Border x:Name="ToggleAdvanced" Grid.Column="1" Width="42" Height="24"
+                                        CornerRadius="{DynamicResource RadiusPill}" Background="#D1D5DB" Cursor="Hand"
+                                        MouseLeftButtonDown="ToggleAdvanced_Click" VerticalAlignment="Center">
+                                    <Ellipse Width="18" Height="18" Fill="White"
+                                             HorizontalAlignment="Left" Margin="3,0,0,0">
+                                        <Ellipse.RenderTransform>
+                                            <TranslateTransform x:Name="TransAdvanced" X="0" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- JVM 参数 (高级模式开启时显示) -->
+                        <StackPanel x:Name="JvmArea" Visibility="Collapsed" Margin="0,12,0,0">
+                            <TextBlock Text="JVM 参数" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                            <TextBox x:Name="JvmArgsBox" Style="{StaticResource TextAreaStyle}"
+                                     Tag="-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions" />
+                            <TextBlock Text="推荐: -XX:+UseG1GC -XX:MaxGCPauseMillis=50"
+                                       FontSize="12" Foreground="#9CA3AF" Margin="0,4,0,0" />
+                        </StackPanel>
+
+                        <!-- 版本隔离 -->
+                        <Border Background="{DynamicResource AccentSoftBrush}" BorderBrush="{DynamicResource AccentLightBrush}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius8}" Padding="12" Margin="0,16,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="版本隔离" FontSize="13" FontWeight="Medium"
+                                               Foreground="{DynamicResource AccentDarkBrush}" />
+                                    <TextBlock Text="每个版本使用独立的游戏目录（存档、Mod、配置互不干扰）"
+                                               FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                                <Border x:Name="ToggleVersionIsolation" Grid.Column="1" Width="42" Height="24"
+                                        CornerRadius="{DynamicResource RadiusPill}" Background="{DynamicResource AccentBrush}" Cursor="Hand"
+                                        MouseLeftButtonDown="ToggleVersionIsolation_Click" VerticalAlignment="Center">
+                                    <Ellipse Width="18" Height="18" Fill="White"
+                                             HorizontalAlignment="Left" Margin="3,0,0,0">
+                                        <Ellipse.RenderTransform>
+                                            <TranslateTransform x:Name="TransVersionIsolation" X="20" />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 4. 通用设置 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconSliders}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="#6B7280" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="通用设置" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- 启动后保持启动器打开 -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="启动后保持启动器打开" FontSize="13" Foreground="#4B5563" />
+                                <TextBlock Text="启动游戏后不自动关闭启动器窗口" FontSize="12"
+                                           Foreground="#9CA3AF" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <Border x:Name="ToggleKeepOpen" Grid.Column="1" Width="42" Height="24"
+                                    CornerRadius="{DynamicResource RadiusPill}" Background="{DynamicResource AccentBrush}" Cursor="Hand"
+                                    MouseLeftButtonDown="ToggleKeepOpen_Click" VerticalAlignment="Center">
+                                <Ellipse Width="18" Height="18" Fill="White"
+                                         HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="TransKeepOpen" X="20" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Border>
+                        </Grid>
+
+                        <!-- 自动更新 -->
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="自动更新" FontSize="13" Foreground="#4B5563" />
+                                <TextBlock Text="启动器启动后自动检查是否有新版本" FontSize="12"
+                                           Foreground="#9CA3AF" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <Border x:Name="ToggleAutoUpdate" Grid.Column="1" Width="42" Height="24"
+                                    CornerRadius="{DynamicResource RadiusPill}" Background="{DynamicResource AccentBrush}" Cursor="Hand"
+                                    MouseLeftButtonDown="ToggleAutoUpdate_Click" VerticalAlignment="Center">
+                                <Ellipse Width="18" Height="18" Fill="White"
+                                         HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="TransAutoUpdate" X="20" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 5. 目录与下载 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconFolderOpen}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="#F97316" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="目录与下载" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- 下载线程数 -->
+                        <StackPanel>
+                            <TextBlock x:Name="ThreadsLabel" Text="下载线程数: 4"
+                                       FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                            <Slider x:Name="ThreadsSlider" Minimum="1" Maximum="16" SmallChange="1" LargeChange="5"
+                                    Value="8" Style="{StaticResource SliderStyle}"
+                                    ValueChanged="ThreadsSlider_ValueChanged" />
+                        </StackPanel>
+
+                        <!-- 下载源 -->
+                        <StackPanel Margin="0,16,0,0">
+                            <TextBlock Text="下载源" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                            <ComboBox x:Name="DownloadSourceCombo"
+                                      SelectedIndex="0" HorizontalAlignment="Left" MinWidth="260"
+                                      SelectionChanged="DownloadSourceCombo_SelectionChanged">
+                                <ComboBoxItem Content="自动测速（选最快，默认）" />
+                                <ComboBoxItem Content="官方源" />
+                                <ComboBoxItem Content="BMCLAPI 国内镜像" />
+                            </ComboBox>
+                            <TextBlock Text="默认自动检测各源速度，下载时选用最快且可用的源；也可手动指定固定源"
+                                       FontSize="12" Foreground="#9CA3AF" Margin="0,4,0,0" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <!-- 游戏目录 -->
+                        <StackPanel Margin="0,16,0,0">
+                            <TextBlock Text="游戏目录" FontSize="13" Foreground="#4B5563" Margin="0,0,0,4" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="GameDirBox" Style="{StaticResource InputBoxStyle}" Tag="选择游戏目录..." />
+                                <Button Grid.Column="1" Style="{StaticResource GrayBtnStyle}"
+                                        Content="浏览" Margin="8,0,0,0" Click="GameDirBrowse_Click" />
+                            </Grid>
+                            <TextBlock Text="默认: 启动器目录下的 .minecraft 文件夹"
+                                       FontSize="12" Foreground="#9CA3AF" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 6. 关于与更新 ==================== -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="20" Margin="0,16,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Path Data="{StaticResource IconSparkles}" Width="20" Height="20" Stretch="Uniform"
+                              Stroke="#8B5CF6" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="关于与更新" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- 当前版本信息 -->
+                        <Border CornerRadius="{DynamicResource Radius8}" Padding="12" BorderBrush="#F3E8FF" BorderThickness="1">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#F3E8FF" Offset="0" />
+                                    <GradientStop Color="{DynamicResource AccentSoftColor}" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="当前版本" FontSize="12" Foreground="#6B7280" />
+                                    <TextBlock x:Name="SettingsCurrentVersionText" Text="v1.1.0" FontSize="18"
+                                               FontWeight="Bold" Foreground="#7C3AED" Margin="0,2,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="检查时间" FontSize="12" Foreground="#6B7280"
+                                               HorizontalAlignment="Right" />
+                                    <TextBlock x:Name="SettingsCheckTimeText" Text="未检查" FontSize="12"
+                                               Foreground="#4B5563" Margin="0,2,0,0" HorizontalAlignment="Right" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- 检查更新 -->
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <Button Style="{StaticResource PrimaryBtnStyle}" Click="CheckUpdate_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconRefreshCw}" Width="16" Height="16"
+                                          Stretch="Uniform" Stroke="White" StrokeThickness="2"
+                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          StrokeLineJoin="Round" />
+                                    <TextBlock x:Name="SettingsCheckUpdateText" Text="检查更新" FontSize="13"
+                                               Margin="8,0,0,0" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- 已是最新版本（无更新时显示） -->
+                        <Border x:Name="SettingsLatestPanel" Background="#F0FDF4" BorderBrush="#DCFCE7"
+                                BorderThickness="1" CornerRadius="{DynamicResource Radius8}" Padding="12" Margin="0,12,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconCheckCircle}" Width="16" Height="16"
+                                      Stretch="Uniform" Stroke="#22C55E" StrokeThickness="2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round" VerticalAlignment="Center" />
+                                <TextBlock Text="已是最新版本" FontSize="13" Foreground="#15803D"
+                                           Margin="8,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 发现新版本（有更新时显示） -->
+                        <Border x:Name="SettingsUpdatePanel" Visibility="Collapsed" Background="#FFFBEB"
+                                BorderBrush="#FDE68A" BorderThickness="1" CornerRadius="{DynamicResource Radius8}" Padding="12"
+                                Margin="0,12,0,0">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconRefreshCw}" Width="16" Height="16"
+                                          Stretch="Uniform" Stroke="#D97706" StrokeThickness="2"
+                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          StrokeLineJoin="Round" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="SettingsUpdateVersionText" Text="发现新版本" FontSize="13"
+                                               FontWeight="SemiBold" Foreground="#92400E" Margin="8,0,0,0"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                                <TextBlock x:Name="SettingsUpdateDescText" FontSize="12" Foreground="#B45309"
+                                           TextWrapping="Wrap" Margin="0,6,0,0" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                                    <Button Style="{StaticResource PrimaryBtnStyle}" Click="SettingsUpdateNow_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="立即更新" FontSize="13" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== 操作按钮 ==================== -->
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                <Button Style="{StaticResource GrayBtnStyle}" Height="40" Padding="24,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconRotateCcw}" Width="16" Height="16" Stretch="Uniform"
+                              Stroke="#374151" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                        <TextBlock Text="恢复默认" FontSize="13" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
+                    <Path Data="{StaticResource IconCheckCircle}" Width="14" Height="14" Stretch="Uniform"
+                          Stroke="#22C55E" StrokeThickness="2" StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                    <TextBlock Text="所有改动自动保存并即时生效" FontSize="12" Foreground="#9CA3AF"
+                               Margin="6,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

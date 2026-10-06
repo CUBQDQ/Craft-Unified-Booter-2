@@ -1,0 +1,282 @@
+﻿<!--
+  Craft Unified Booter (CUB)
+  Copyright (c) 2026 方块筑界 (Craft Unified Booter Project). 保留所有权利。
+  SPDX-License-Identifier: LicenseRef-Proprietary
+  本文件仅限阅读与借鉴，禁止复制、克隆、使用与分发，详见根目录下的 LICENSE 文件。
+-->
+
+<UserControl x:Class="CraftUnifiedBooter.Pages.ServerPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- ===== lucide 描边图标 (24x24 视口) ===== -->
+        <Geometry x:Key="IconGlobe">M12 12A10 10 0 1 1 12 22A10 10 0 1 1 12 12Z M12 2A14.5 14.5 0 0 0 12 22A14.5 14.5 0 0 0 12 2 M2 12H22</Geometry>
+        <Geometry x:Key="IconKeyRound">M2.586 17.414A2 2 0 0 0 2 18.828V21A1 1 0 0 0 3 22H6A1 1 0 0 0 7 21V20A1 1 0 0 1 8 19H9A1 1 0 0 0 10 18V17A1 1 0 0 1 11 16H11.172A2 2 0 0 0 12.586 15.414L13.4 13.6A6.5 6.5 0 1 0 9.4 9.6Z M16.5 7.5A0.5 0.5 0 1 1 16.5 8.5A0.5 0.5 0 1 1 16.5 7.5Z</Geometry>
+        <Geometry x:Key="IconPower">M12 2V12 M18.4 6.6A9 9 0 1 1 5.63 6.64</Geometry>
+        <Geometry x:Key="IconTerminal">M4 17L10 11L4 5 M12 19H20</Geometry>
+        <Geometry x:Key="IconCopy">M8 8H18A2 2 0 0 1 20 10V20A2 2 0 0 1 18 22H8A2 2 0 0 1 6 20V10A2 2 0 0 1 8 8Z M16 6V4A2 2 0 0 0 14 2H4A2 2 0 0 0 2 4V14A2 2 0 0 0 4 16H6</Geometry>
+        <Geometry x:Key="IconTrash">M3 6H21 M19 6V20A2 2 0 0 1 17 22H7A2 2 0 0 1 5 20V6 M8 6V4A2 2 0 0 1 10 2H14A2 2 0 0 1 16 4V6 M10 11V17 M14 11V17</Geometry>
+
+        <!-- 清空控制台按钮模板（浅色背景，hover 变深） -->
+        <ControlTemplate x:Key="ClearConsoleTemplate" TargetType="Button">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius10}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Bd" Property="Background" Value="#E5E7EB" />
+                    <Setter Property="Foreground" Value="#374151" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- ===== 阴影 ===== -->
+        <DropShadowEffect x:Key="ShadowSm" Color="{DynamicResource AccentColor}" BlurRadius="12" ShadowDepth="2" Opacity="0.2" />
+        <DropShadowEffect x:Key="ShadowCard" Color="#000000" BlurRadius="20" ShadowDepth="4" Opacity="0.25" />
+
+        <!-- ===== 按钮样式 ===== -->
+        <Style x:Key="BlueSolidButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius10}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BlueShadowButtonStyle" TargetType="Button" BasedOn="{StaticResource BlueSolidButtonStyle}">
+            <Setter Property="Effect" Value="{StaticResource ShadowSm}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius12}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RedGhostButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FEF2F2" />
+            <Setter Property="Foreground" Value="#EF4444" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius10}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FEE2E2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="42" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Background" Value="#F3F4F6" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource Radius12}">
+                            <Grid>
+                                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Tag}" FontSize="14"
+                                           Foreground="#9CA3AF" VerticalAlignment="Center" Margin="16,0"
+                                           IsHitTestVisible="False" Visibility="Collapsed" />
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="16,0" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+                                <Setter TargetName="Bd" Property="Background" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        </UserControl.Resources>
+
+    <Grid Background="{DynamicResource PageBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ===================== 标题 ===================== -->
+        <StackPanel Grid.Row="0" Margin="24,18,24,0">
+            <StackPanel Orientation="Horizontal">
+                <Border Width="34" Height="34" CornerRadius="{DynamicResource Radius8}" Background="{DynamicResource AccentSoftBrush}">
+                    <Path Data="{StaticResource IconKeyRound}" Width="15" Height="15" Stretch="Uniform"
+                          Stroke="{DynamicResource AccentBrush}" StrokeThickness="2"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                </Border>
+                <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="创建房间" FontSize="18" FontWeight="Bold" Foreground="#111827" />
+                    <TextBlock Text="红石联机自动打通网络，创建后把连接地址分享给好友即可加入"
+                               FontSize="12" Foreground="#9CA3AF" Margin="0,2,0,0" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ===================== 上半：表单（世界 / 端口 / 节点，竖排） ===================== -->
+        <Border Grid.Row="2" Margin="24,0,24,0" Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                CornerRadius="{DynamicResource Radius12}" Padding="24,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 游戏版本 -->
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="游戏版本（世界）" FontSize="13" FontWeight="Medium" Foreground="#6B7280" Margin="0,0,0,7" />
+                    <ComboBox x:Name="RoomVersionCombo" Height="42" />
+                </StackPanel>
+
+                <!-- 游戏端口 -->
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <TextBlock Text="游戏端口" FontSize="13" FontWeight="Medium" Foreground="#6B7280" Margin="0,0,0,7" />
+                    <TextBox x:Name="RoomPortBox" Style="{StaticResource InputTextBoxStyle}" Tag="25565" Text="25565" />
+                </StackPanel>
+
+                <!-- 中继节点（占满整行） -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,18,0,0">
+                    <TextBlock Text="中继节点" FontSize="13" FontWeight="Medium" Foreground="#6B7280" Margin="0,0,0,7" />
+                    <ComboBox x:Name="RelayCombo" Height="42" />
+                </StackPanel>
+
+                <!-- 创建按钮（左下） -->
+                <Button x:Name="CreateBtn" Grid.Row="3" Grid.Column="0" Style="{StaticResource BlueShadowButtonStyle}"
+                        Height="44" Margin="0,20,0,0" HorizontalAlignment="Left" Padding="28,0"
+                        VerticalAlignment="Top" Click="CreateRoom_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconGlobe}" Width="16" Height="16" Stretch="Uniform"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                              StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                        <TextBlock x:Name="CreateBtnText" Text="创建房间" FontSize="14" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ===================== 下半：网络控制台（各占一半，信息竖排） ===================== -->
+        <Border Grid.Row="4" Margin="24,0,24,24" Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                CornerRadius="{DynamicResource Radius12}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 左侧信息（全部竖排） -->
+                <StackPanel Grid.Column="0" Margin="16,14">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource IconTerminal}" Width="16" Height="16" Stretch="Uniform"
+                              Stroke="#16A34A" StrokeThickness="2"
+                              StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                        <TextBlock Text="网络控制台" FontSize="14" FontWeight="SemiBold" Foreground="#111827"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- 连接地址单独一排 -->
+                    <TextBlock x:Name="AddressText" Text="暂无连接地址" FontSize="13" Foreground="#16A34A"
+                               Margin="0,12,0,0" TextWrapping="Wrap" />
+
+                    <!-- 联机状态 -->
+                    <TextBlock x:Name="StatusText" Text="未在联机" FontSize="12" Foreground="#6B7280"
+                              Margin="0,7,0,0" />
+
+                    <!-- 操作按钮（竖排） -->
+                    <Button x:Name="CopyAddressBtn" Style="{StaticResource BlueSolidButtonStyle}" Height="32"
+                            Padding="0,0" Margin="0,14,0,0" HorizontalAlignment="Left" Width="110"
+                            IsEnabled="False" Click="CopyAddress_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconCopy}" Width="13" Height="13" Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                            <TextBlock Text="复制地址" FontSize="13" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="EndRoomBtn" Style="{StaticResource RedGhostButtonStyle}" Height="32"
+                            Padding="0,0" Margin="0,8,0,0" HorizontalAlignment="Left" Width="110"
+                            IsEnabled="False" Click="EndRoom_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconPower}" Width="13" Height="13" Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                            <TextBlock Text="结束房间" FontSize="13" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="ClearConsoleBtn" Height="32" Padding="0,0" Margin="0,8,0,0"
+                            HorizontalAlignment="Left" Width="110" Click="ClearConsole_Click"
+                            Background="#F3F4F6" Foreground="#6B7280" Cursor="Hand"
+                            Template="{DynamicResource ClearConsoleTemplate}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconTrash}" Width="13" Height="13" Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                            <TextBlock Text="清空控制台" FontSize="13" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="#E5E7EB" />
+
+                <!-- 右侧日志（自动换行，无左右滚动条，字体加大） -->
+                <TextBox x:Name="ConsoleBox" Grid.Column="2" IsReadOnly="True" TextWrapping="Wrap"
+                         AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                         FontFamily="Consolas" FontSize="12" Foreground="#15803D"
+                         Background="Transparent" BorderThickness="0" Padding="14,10" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

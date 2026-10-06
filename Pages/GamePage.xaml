@@ -1,0 +1,672 @@
+﻿<!--
+  Craft Unified Booter (CUB)
+  Copyright (c) 2026 方块筑界 (Craft Unified Booter Project). 保留所有权利。
+  SPDX-License-Identifier: LicenseRef-Proprietary
+  本文件仅限阅读与借鉴，禁止复制、克隆、使用与分发，详见根目录下的 LICENSE 文件。
+-->
+
+<UserControl x:Class="CraftUnifiedBooter.Pages.GamePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- ============ 图标 ============ -->
+        <Geometry x:Key="IconSearch">M15.5 15.5L21 21 M18 12A6 6 0 1 1 6 12A6 6 0 1 1 18 12Z</Geometry>
+        <Geometry x:Key="IconRefreshCw">M3 12A9 9 0 0 1 12 3A9.75 9.75 0 0 1 18.74 5.74L21 8 M21 3V8H16 M21 12A9 9 0 0 1 12 21A9.75 9.75 0 0 1 5.26 18.26L3 16 M8 16H3V21</Geometry>
+        <Geometry x:Key="IconDownload">M12 3V15 M7 10L12 15L17 10 M21 15V18A2 2 0 0 1 19 20H5A2 2 0 0 1 3 18V15</Geometry>
+        <Geometry x:Key="IconCheckCircle2">M21.8 10A10 10 0 1 1 17 3.3 M9 11L12 14L22 4</Geometry>
+        <Geometry x:Key="IconLoader">M21 12A9 9 0 1 1 12 3</Geometry>
+        <Geometry x:Key="IconX">M6 6L18 18 M18 6L6 18</Geometry>
+
+        <!-- ============ Pill 样式 ============ -->
+        <Style x:Key="PillGreen" TargetType="Border">
+            <Setter Property="Background" Value="#DCFCE7" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+        </Style>
+        <Style x:Key="PillOrange" TargetType="Border">
+            <Setter Property="Background" Value="#FFEDD5" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+        </Style>
+        <Style x:Key="PillBlue" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+        </Style>
+        <Style x:Key="PillPurple" TargetType="Border">
+            <Setter Property="Background" Value="#EDE9FE" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+        </Style>
+        <Style x:Key="PillCyan" TargetType="Border">
+            <Setter Property="Background" Value="#CCFBF1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+        </Style>
+
+        <!-- ============ Filter Tab 样式 ============ -->
+        <Style x:Key="FilterTabStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#6B7280" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius6}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F3F4F6" />
+                                <Setter Property="Foreground" Value="#374151" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ============ Mode Chip 按钮（更多资源 / 资源类型） ============ -->
+        <Style x:Key="ModeBtnStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="#F3F4F6" />
+            <Setter Property="Foreground" Value="#4B5563" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius8}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E5E7EB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModeBtnActiveStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius8}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ============ Ghost Button 样式 ============ -->
+        <Style x:Key="GhostBtnStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="#9CA3AF" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius6}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F3F4F6" />
+                                <Setter Property="Foreground" Value="#4B5563" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ============ Install Button (蓝) ============ -->
+        <Style x:Key="InstallBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius6}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ============ Installed Button (绿, 已安装) ============ -->
+        <Style x:Key="InstalledBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="#DCFCE7" />
+            <Setter Property="Foreground" Value="#15803D" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource Radius6}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ============ Installed Badge ============ -->
+        <Style x:Key="InstalledBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="#DCFCE7" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8,3" />
+        </Style>
+
+        <!-- ============ Overlay/Modal ============ -->
+        <Style x:Key="ModalOverlayStyle" TargetType="Border">
+            <Setter Property="Background" Value="#000000" />
+            <Setter Property="Opacity" Value="0.35" />
+        </Style>
+
+        <Style x:Key="ModalCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="24" />
+        </Style>
+
+        <!-- ============ Loader Spinner ============ -->
+        <Style x:Key="SpinnerPathStyle" TargetType="Path">
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="StrokeThickness" Value="2" />
+            <Setter Property="StrokeStartLineCap" Value="Round" />
+            <Setter Property="StrokeEndLineCap" Value="Round" />
+            <Setter Property="StrokeLineJoin" Value="Round" />
+            <Setter Property="Width" Value="14" />
+            <Setter Property="Height" Value="14" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource PageBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ===================== 顶部工具栏 ===================== -->
+        <Border Grid.Row="0" Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1"
+                Padding="24,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- 第一行：标题 + 刷新 -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock x:Name="PageTitle" Text="下载" FontSize="18" FontWeight="Bold" Foreground="#111827" />
+                        <TextBlock x:Name="PageSubtitle" Text="下载并管理 Minecraft 游戏版本" FontSize="12"
+                                   Foreground="#9CA3AF" Margin="0,2,0,0" />
+                    </StackPanel>
+
+                    <Button x:Name="RefreshBtn" Style="{StaticResource GhostBtnStyle}"
+                            Grid.Column="1" ToolTip="刷新列表" Click="RefreshBtn_Click"
+                            VerticalAlignment="Center" Padding="10,6">
+                        <StackPanel Orientation="Horizontal">
+                            <Path x:Name="RefreshIcon" Data="{StaticResource IconRefreshCw}" Width="14" Height="14"
+                                  Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                  RenderTransformOrigin="0.5,0.5">
+                                <Path.RenderTransform>
+                                    <RotateTransform x:Name="RefreshSpin" />
+                                </Path.RenderTransform>
+                            </Path>
+                            <TextBlock Text="刷新" FontSize="13" Margin="6,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <!-- 第二行：[更多资源] / 资源类型按钮 + 搜索框 -->
+                <Grid Grid.Row="1" Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <Button x:Name="MoreResourcesBtn" Style="{StaticResource ModeBtnStyle}"
+                                Click="MoreResources_Click" Padding="14,7">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconSearch}" Width="13" Height="13" Stretch="Uniform"
+                                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                      StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      VerticalAlignment="Center" />
+                                <TextBlock Text="更多资源" Margin="6,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            </StackPanel>
+                        </Button>
+
+                        <!-- 资源类型按钮组（点击"更多资源"后出现，覆盖其原位置） -->
+                        <StackPanel x:Name="ResourceTypePanel" Orientation="Horizontal"
+                                    Visibility="Collapsed" VerticalAlignment="Center">
+                            <Button x:Name="ResMod" Content="Mod" Tag="mod" Style="{StaticResource ModeBtnStyle}"
+                                    Click="ResourceType_Click" />
+                            <Button x:Name="ResModpack" Content="整合包" Tag="modpack" Style="{StaticResource ModeBtnStyle}"
+                                    Click="ResourceType_Click" Margin="4,0,0,0" />
+                            <Button x:Name="ResDatapack" Content="数据包" Tag="datapack" Style="{StaticResource ModeBtnStyle}"
+                                    Click="ResourceType_Click" Margin="4,0,0,0" />
+                            <Button x:Name="ResResourcepack" Content="资源包" Tag="resourcepack" Style="{StaticResource ModeBtnStyle}"
+                                    Click="ResourceType_Click" Margin="4,0,0,0" />
+                            <Button x:Name="ResShader" Content="光影包" Tag="shader" Style="{StaticResource ModeBtnStyle}"
+                                    Click="ResourceType_Click" Margin="4,0,0,0" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- 搜索框 -->
+                    <Border Grid.Column="1" Background="#F3F4F6" CornerRadius="{DynamicResource Radius8}"
+                            Padding="10,7" VerticalAlignment="Center" Margin="16,0,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path Data="{StaticResource IconSearch}" Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="#9CA3AF" StrokeThickness="2"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  VerticalAlignment="Center" />
+                            <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent"
+                                     BorderThickness="0" Foreground="#111827" FontSize="13"
+                                     Margin="8,0,0,0"
+                                     VerticalAlignment="Center"
+                                     TextChanged="SearchBox_TextChanged" />
+                            <TextBlock x:Name="SearchPlaceholder" Grid.Column="1" Text="搜索版本 ID…" FontSize="13"
+                                       Foreground="#9CA3AF" VerticalAlignment="Center"
+                                       Margin="8,0,0,0" IsHitTestVisible="False"
+                                       Visibility="Visible" />
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- 第三行：原版筛选 / 返回原版 -->
+                <Grid Grid.Row="2" Margin="0,10,0,0">
+                    <StackPanel x:Name="VanillaFilterPanel" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="FilterAll" Style="{StaticResource FilterTabStyle}"
+                                Click="Filter_Click" Tag="all" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}">
+                            全部
+                        </Button>
+                        <Button x:Name="FilterRelease" Style="{StaticResource FilterTabStyle}"
+                                Click="Filter_Click" Tag="release" Margin="4,0,0,0">
+                            正式版
+                        </Button>
+                        <Button x:Name="FilterSnapshot" Style="{StaticResource FilterTabStyle}"
+                                Click="Filter_Click" Tag="snapshot" Margin="4,0,0,0">
+                            预览版
+                        </Button>
+                        <Button x:Name="FilterOldAlpha" Style="{StaticResource FilterTabStyle}"
+                                Click="Filter_Click" Tag="old_alpha" Margin="4,0,0,0">
+                            远古版
+                        </Button>
+                        <Button x:Name="FilterOldBeta" Style="{StaticResource FilterTabStyle}"
+                                Click="Filter_Click" Tag="old_beta" Margin="4,0,0,0">
+                            远古版
+                        </Button>
+                    </StackPanel>
+
+                    <Button x:Name="BackVanillaBtn" Content="原版游戏" Visibility="Collapsed"
+                            Style="{StaticResource ModeBtnStyle}" Click="BackVanilla_Click"
+                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ===================== 版本列表 ===================== -->
+        <ScrollViewer x:Name="VersionListScroll" Grid.Row="1" VerticalScrollBarVisibility="Hidden"
+                      Padding="24,16">
+            <StackPanel
+                        x:Name="VersionListPanel">
+                <!-- 动态版本卡片会插入此处 -->
+
+                <!-- 加载占位符 -->
+                <Border x:Name="LoadingPlaceholder" Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB"
+                        BorderThickness="1" CornerRadius="{DynamicResource Radius12}" Padding="24" Margin="0,0,0,12">
+                    <StackPanel HorizontalAlignment="Center">
+                        <Path Data="{StaticResource IconLoader}" Width="24" Height="24"
+                              Stretch="Uniform" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2"
+                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round" RenderTransformOrigin="0.5,0.5">
+                            <Path.RenderTransform>
+                                <RotateTransform x:Name="LoadingSpin" />
+                            </Path.RenderTransform>
+                            <Path.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="LoadingSpin"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             From="0" To="360" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Path.Triggers>
+                        </Path>
+                        <TextBlock Text="加载中…" FontSize="13" Foreground="#9CA3AF"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- 空状态 -->
+                <Border x:Name="EmptyPlaceholder" Visibility="Collapsed"
+                        Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="{DynamicResource Radius12}" Padding="24" Margin="0,0,0,12">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="暂无版本" FontSize="14" Foreground="#9CA3AF"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="点击刷新按钮获取最新列表" FontSize="12" Foreground="#D1D5DB"
+                                   HorizontalAlignment="Center" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===================== 资源列表（Modrinth） ===================== -->
+        <ScrollViewer x:Name="ResourceListScroll" Grid.Row="1" Visibility="Collapsed"
+                      VerticalScrollBarVisibility="Hidden" Padding="24,16">
+            <StackPanel x:Name="ResourceListPanel">
+                <!-- 动态资源卡片会插入此处 -->
+
+                <Border x:Name="ResourceLoadingPlaceholder" Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB"
+                        BorderThickness="1" CornerRadius="{DynamicResource Radius12}" Padding="24" Margin="0,0,0,12">
+                    <StackPanel HorizontalAlignment="Center">
+                        <Path Data="{StaticResource IconLoader}" Width="24" Height="24"
+                              Stretch="Uniform" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2"
+                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round" RenderTransformOrigin="0.5,0.5">
+                            <Path.RenderTransform>
+                                <RotateTransform x:Name="ResourceLoadingSpin" />
+                            </Path.RenderTransform>
+                            <Path.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="ResourceLoadingSpin"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             From="0" To="360" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Path.Triggers>
+                        </Path>
+                        <TextBlock Text="加载中…" FontSize="13" Foreground="#9CA3AF"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="ResourceEmptyPlaceholder" Visibility="Collapsed"
+                        Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                        CornerRadius="{DynamicResource Radius12}" Padding="24" Margin="0,0,0,12">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="暂无资源" FontSize="14" Foreground="#9CA3AF"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Text="换个关键词试试，或检查网络连接" FontSize="12" Foreground="#D1D5DB"
+                                   HorizontalAlignment="Center" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===================== 安装弹窗 Overlay ===================== -->
+        <Border x:Name="ModalOverlay" Visibility="Collapsed"
+                Background="#59000000"
+                MouseLeftButtonDown="ModalOverlay_Click"
+                Grid.RowSpan="2" FocusManager.IsFocusScope="True">
+            <Border x:Name="ModalCard" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="580" Background="{DynamicResource CardBackground}" CornerRadius="{DynamicResource Radius16}"
+                    BorderBrush="#E5E7EB" BorderThickness="1" Padding="28"
+                    RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform x:Name="ModalTranslate" Y="20" />
+                        <ScaleTransform x:Name="ModalScale" ScaleX="0.92" ScaleY="0.92" />
+                    </TransformGroup>
+                </Border.RenderTransform>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Border.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ModalTranslate"
+                                                 Storyboard.TargetProperty="Y"
+                                                 From="20" To="0" Duration="0:0:0.55">
+                                    <DoubleAnimation.EasingFunction>
+                                        <ElasticEase Oscillations="1" Springiness="8" EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="ModalScale"
+                                                 Storyboard.TargetProperty="ScaleX"
+                                                 From="0.92" To="1" Duration="0:0:0.55">
+                                    <DoubleAnimation.EasingFunction>
+                                        <ElasticEase Oscillations="1" Springiness="8" EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetName="ModalScale"
+                                                 Storyboard.TargetProperty="ScaleY"
+                                                 From="0.92" To="1" Duration="0:0:0.55">
+                                    <DoubleAnimation.EasingFunction>
+                                        <ElasticEase Oscillations="1" Springiness="8" EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+
+                <StackPanel>
+                    <!-- 弹窗标题 -->
+                    <Grid Margin="0,0,0,24">
+                        <TextBlock Text="下载版本" FontSize="18" FontWeight="Bold" Foreground="#111827"
+                                   VerticalAlignment="Center" />
+                        <Button x:Name="ModalCloseBtn" Cursor="Hand" Background="Transparent"
+                                BorderThickness="0" Padding="0" HorizontalAlignment="Right"
+                                VerticalAlignment="Center" Click="ModalClose_Click"
+                                Foreground="#9CA3AF">
+                            <Path Data="{StaticResource IconX}" Width="18" Height="18" Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                        </Button>
+                    </Grid>
+
+                    <!-- 版本信息行 -->
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="ModalVersionId" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="#111827" />
+                            <TextBlock x:Name="ModalVersionType" FontSize="13" Foreground="#9CA3AF"
+                                       Margin="0,2,0,0" />
+                        </StackPanel>
+                        <Border Grid.Column="1" x:Name="ModalTypePill"
+                                Background="{DynamicResource AccentSoftBrush}" CornerRadius="{DynamicResource Radius4}" Padding="12,4"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="ModalTypeLabel" FontSize="12" FontWeight="Medium"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Border>
+                    </Grid>
+
+                    <!-- 加载器选择区（横向一排，颜色加深） -->
+                    <TextBlock Text="加载器" FontSize="14" FontWeight="Medium" Foreground="#374151"
+                               Margin="0,0,10,0" />
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="LoaderVanilla" Cursor="Hand" Background="#BFDBFE"
+                                BorderBrush="#60A5FA" BorderThickness="1" CornerRadius="{DynamicResource Radius10}"
+                                Padding="10,14" Margin="0,0,4,0" Grid.Column="0"
+                                MouseLeftButtonDown="LoaderSelected">
+                            <StackPanel>
+                                <TextBlock Text="Vanilla" FontSize="13.5" FontWeight="SemiBold" Foreground="#1E3A8A" HorizontalAlignment="Center" />
+                                <TextBlock Text="原版" FontSize="11" Foreground="#1D4ED8" Margin="0,2,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="LoaderFabric" Cursor="Hand" Background="#DDD6FE"
+                                BorderBrush="#A78BFA" BorderThickness="1" CornerRadius="{DynamicResource Radius10}"
+                                Padding="10,14" Margin="0,0,4,0" Grid.Column="1"
+                                MouseLeftButtonDown="LoaderSelected">
+                            <StackPanel>
+                                <TextBlock Text="Fabric" FontSize="13.5" FontWeight="SemiBold" Foreground="#6D28D9" HorizontalAlignment="Center" />
+                                <TextBlock Text="轻量" FontSize="11" Foreground="#7C3AED" Margin="0,2,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="LoaderForge" Cursor="Hand" Background="#FED7AA"
+                                BorderBrush="#FDBA74" BorderThickness="1" CornerRadius="{DynamicResource Radius10}"
+                                Padding="10,14" Margin="0,0,4,0" Grid.Column="2"
+                                MouseLeftButtonDown="LoaderSelected">
+                            <StackPanel>
+                                <TextBlock Text="Forge" FontSize="13.5" FontWeight="SemiBold" Foreground="#9A3412" HorizontalAlignment="Center" />
+                                <TextBlock Text="经典" FontSize="11" Foreground="#C2410C" Margin="0,2,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="LoaderNeoForge" Cursor="Hand" Background="#A7F3D0"
+                                BorderBrush="#34D399" BorderThickness="1" CornerRadius="{DynamicResource Radius10}"
+                                Padding="10,14" Margin="0,0,4,0" Grid.Column="3"
+                                MouseLeftButtonDown="LoaderSelected">
+                            <StackPanel>
+                                <TextBlock Text="NeoForge" FontSize="13.5" FontWeight="SemiBold" Foreground="#065F46" HorizontalAlignment="Center" />
+                                <TextBlock Text="新一代" FontSize="11" Foreground="#047857" Margin="0,2,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="LoaderOptiFine" Cursor="Hand" Background="#BAE6FD"
+                                BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="{DynamicResource Radius10}"
+                                Padding="10,14" Margin="0,0,0,0" Grid.Column="4"
+                                MouseLeftButtonDown="LoaderSelected">
+                            <StackPanel>
+                                <TextBlock Text="OptiFine" FontSize="13.5" FontWeight="SemiBold" Foreground="#075985" HorizontalAlignment="Center" />
+                                <TextBlock Text="高清修复" FontSize="11" Foreground="#0369A1" Margin="0,2,0,0" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- 安装名称：随加载器自动切换，可手动修改 -->
+                    <TextBlock Text="安装名称" FontSize="14" FontWeight="Medium" Foreground="#374151"
+                               Margin="0,0,0,8" />
+                    <Border CornerRadius="{DynamicResource Radius10}" BorderBrush="#C7CDD6" BorderThickness="1"
+                            Background="#F9FAFB">
+                        <TextBox x:Name="InstallNameBox" FontSize="15" FontWeight="Medium" Foreground="#111827"
+                                 Background="Transparent"
+                                 Padding="12,10" VerticalAlignment="Center"
+                                 PreviewKeyDown="InstallNameBox_PreviewKeyDown" />
+                    </Border>
+                    <TextBlock Text="切换加载器时自动生成，可手动修改" FontSize="11" Foreground="#9CA3AF"
+                               Margin="0,8,0,22" />
+
+                    <!-- 底部按钮 -->
+                    <Grid>
+                        <Button x:Name="InstallBtn" Style="{StaticResource InstallBtnStyle}"
+                                Height="44" FontSize="15" Padding="0" Width="140"
+                                HorizontalAlignment="Right" Click="InstallBtn_Click">
+                            开始下载
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- ===================== 资源安装：选择目标版本弹窗 ===================== -->
+        <Border x:Name="ResourceModalOverlay" Visibility="Collapsed"
+                Background="#59000000" Grid.RowSpan="2" FocusManager.IsFocusScope="True">
+            <Border Width="440" Style="{StaticResource ModalCardStyle}"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <Grid Margin="0,0,0,16">
+                        <TextBlock Text="安装到版本" FontSize="16" FontWeight="SemiBold" Foreground="#111827"
+                                   VerticalAlignment="Center" />
+                        <Button x:Name="ResourceModalCloseBtn" Cursor="Hand" Background="Transparent"
+                                BorderThickness="0" Padding="0" HorizontalAlignment="Right"
+                                VerticalAlignment="Center" Click="ResourceModalCancel_Click"
+                                Foreground="#9CA3AF">
+                            <Path Data="{StaticResource IconX}" Width="16" Height="16" Stretch="Uniform"
+                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                        </Button>
+                    </Grid>
+
+                    <TextBlock x:Name="ResourceModalTitle" FontSize="12" Foreground="#9CA3AF" TextWrapping="Wrap" />
+
+                    <TextBlock Text="目标版本" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,16,0,8" />
+                    <ComboBox x:Name="ResourceTargetVersionCombo" Height="40" />
+
+                    <TextBlock FontSize="11" Foreground="#9CA3AF" TextWrapping="Wrap" Margin="0,10,0,0"
+                               Text="资源将安装到该版本的 mods / datapacks / resourcepacks / shaderpacks 文件夹。开启「版本隔离」后，不同版本的游戏目录互不干扰。" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                        <Button Style="{StaticResource GhostBtnStyle}" Content="取消" Padding="12,6"
+                                Click="ResourceModalCancel_Click" Margin="0,0,8,0" FontSize="13" />
+                        <Button Style="{StaticResource InstallBtnStyle}"
+                                Content="确认安装" Height="34" Padding="18,0" FontSize="13"
+                                Click="ResourceModalOk_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,63 @@
+﻿<!--
+  Craft Unified Booter (CUB)
+  Copyright (c) 2026 方块筑界 (Craft Unified Booter Project). 保留所有权利。
+  SPDX-License-Identifier: LicenseRef-Proprietary
+  本文件仅限阅读与借鉴，禁止复制、克隆、使用与分发，详见根目录下的 LICENSE 文件。
+-->
+
+<UserControl x:Class="CraftUnifiedBooter.Pages.MiniAppPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Geometry x:Key="IconCompass">M22 12A10 10 0 1 1 12 2A10 10 0 0 1 22 12Z M16.24 7.76L14.12 14.12L7.76 16.24L9.88 9.88Z</Geometry>
+        <Geometry x:Key="IconMap">M9 4L15 6L21 3V20L15 22L9 20L3 22V5Z M9 4V20 M15 6V22</Geometry>
+        <Geometry x:Key="IconChevronRight">M9 6L15 12L9 18</Geometry>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                  Background="{DynamicResource PageBackground}">
+        <StackPanel Margin="24,24,24,24">
+
+            <TextBlock Text="小程序" FontSize="20" FontWeight="Bold" Foreground="#111827" />
+
+            <!-- 开发者内容提示 -->
+            <Border Background="#FFF7ED" BorderBrush="#FDBA74" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius10}" Padding="12,10" Margin="0,16,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="20" Height="20" CornerRadius="{DynamicResource Radius6}" Background="#F59E0B" VerticalAlignment="Center">
+                        <TextBlock Text="!" FontSize="13" FontWeight="Bold" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="这是开发者内容，请仔细分辨" FontSize="13" FontWeight="SemiBold"
+                               Foreground="#92400E" Margin="8,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="模块列表" FontSize="13" FontWeight="SemiBold" Foreground="#6B7280" Margin="0,20,0,8" />
+
+            <!-- 小程序 1：占位 -->
+            <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius12}" Padding="18" Margin="0,8,0,0" Opacity="0.55">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="46" Height="46" CornerRadius="{DynamicResource Radius12}"
+                            Background="#F3F4F6" VerticalAlignment="Center">
+                        <Path Data="{StaticResource IconMap}" Width="22" Height="22" Stretch="Uniform"
+                              Stroke="#9CA3AF" StrokeThickness="2" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="更多小程序（敬请期待）" FontSize="15" FontWeight="SemiBold" Foreground="#6B7280" />
+                        <TextBlock Text="第二个小程序正在开发中…"
+                                   FontSize="12" Foreground="#9CA3AF" Margin="0,3,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

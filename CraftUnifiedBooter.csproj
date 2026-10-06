@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>CraftUnifiedBooter</RootNamespace>
+    <AssemblyName>CraftUnifiedBooter</AssemblyName>
+    <Version>1.1.4</Version>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SatelliteResourceLanguages>zh-Hans;en</SatelliteResourceLanguages>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <!-- 框架依赖单文件发布：不内置 .NET 8 运行时（体积小），目标机器需安装 .NET 8 Desktop Runtime。
+       原生库（WebView2Loader.dll 等）嵌入 exe，运行时自动解压到临时目录；
+       XML 文档文件不输出，实现“只留一个 exe”。 -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <DebugType>none</DebugType>
+    <!-- 将原生 DLL 嵌入单文件，运行时自解压（WebView2Loader.dll 不再留在 exe 旁） -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <!-- 排除 XML 文档文件，避免 publish 目录出现 *.xml -->
+    <ExcludeXmlDocumentationFiles>true</ExcludeXmlDocumentationFiles>
+    <!-- 限制引用程序集只复制 .dll，不复制 NuGet 包自带的 *.xml/*.pdb 文档 -->
+    <AllowedReferenceRelatedFileExtensions>.dll</AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\icon.png" />
+    <Resource Include="Assets\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 模组中文名数据库（仿照 PCL2 的 ModData 格式）作为嵌入资源打进单文件，不再依赖外部文件 -->
+    <EmbeddedResource Include="Resources\ModData.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 官方默认皮肤（9 个角色）作为嵌入资源打进单文件，运行时从程序集提取到 CUB/skins -->
+    <EmbeddedResource Include="Skins\*.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 只用 WinForms 的托盘，避免 System.Drawing/System.Windows.Forms 隐式 using 与 WPF 类型冲突 -->
+    <Using Remove="System.Drawing" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 自研种子地图：不再依赖 WebView2 外部网页，移除 WebView2 包 -->
+  </ItemGroup>
+
+</Project>

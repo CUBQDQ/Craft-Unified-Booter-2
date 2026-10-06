@@ -1,0 +1,327 @@
+﻿<!--
+  Craft Unified Booter (CUB)
+  Copyright (c) 2026 方块筑界 (Craft Unified Booter Project). 保留所有权利。
+  SPDX-License-Identifier: LicenseRef-Proprietary
+  本文件仅限阅读与借鉴，禁止复制、克隆、使用与分发，详见根目录下的 LICENSE 文件。
+-->
+
+<UserControl x:Class="CraftUnifiedBooter.Pages.HomePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CraftUnifiedBooter.Pages">
+    <UserControl.Resources>
+        <!-- ============ 内联图标 (lucide 描边风格) ============ -->
+        <Geometry x:Key="IconPlay">M8 5V19L19 12Z</Geometry>
+        <Geometry x:Key="IconMegaphone">M3 11V13A1 1 0 0 0 4 14H6L12 19V5L6 10H4A1 1 0 0 0 3 11Z M15.5 8.5A5 5 0 0 1 15.5 15.5 M18.5 5.5A9 9 0 0 1 18.5 18.5</Geometry>
+        <Geometry x:Key="IconLayers">M12 2L2 7L12 12L22 7Z M2 12L12 17L22 12 M2 17L12 22L22 17</Geometry>
+        <Geometry x:Key="IconSparkles">M12 3L13.6 8.4L19 10L13.6 11.6L12 17L10.4 11.6L5 10L10.4 8.4Z M19 15L19.7 17.3L22 18L19.7 18.7L19 21L18.3 18.7L16 18L18.3 17.3Z M5 15L5.6 16.9L7.5 17.5L5.6 18.1L5 20L4.4 18.1L2.5 17.5L4.4 16.9Z</Geometry>
+        <Geometry x:Key="IconUser">M20 21V19A2 2 0 0 0 18 17H6A2 2 0 0 0 4 19V21 M12 3A4 4 0 0 0 8 7V9H16V7A4 4 0 0 0 12 3Z</Geometry>
+        <Geometry x:Key="IconChevronRight">M9 6L15 12L9 18</Geometry>
+        <Geometry x:Key="IconCpu">M4 4H20A2 2 0 0 1 22 6V18A2 2 0 0 1 20 20H4A2 2 0 0 1 2 18V6A2 2 0 0 1 4 4Z M9 9H15V15H9Z</Geometry>
+        <Geometry x:Key="IconClose">M6 6L18 18 M18 6L6 18</Geometry>
+
+        <!-- 卡片 -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource CardRadius}" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Effect" Value="{StaticResource ShadowSoft}" />
+        </Style>
+
+        <!-- 启动按钮 -->
+        <Style x:Key="LaunchButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="{DynamicResource ControlRadius}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconPlay}" Width="18" Height="18" Stretch="Uniform"
+                                      Fill="White" Margin="0,0,8,0" />
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentLightBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 顶部功能入口（版本管理 / 皮肤库） -->
+        <Style x:Key="EntryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="#E5E7EB" BorderThickness="1"
+                                CornerRadius="{DynamicResource CardRadius}"
+                                Padding="14,10">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+                                <Setter TargetName="Bd" Property="Background" Value="#F8FAFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 进程管理弹层中的停止按钮 -->
+        <Style x:Key="ProcessStopButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FEF2F2" />
+            <Setter Property="Foreground" Value="#DC2626" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius6}" Padding="10,4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FECACA" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource PageBackground}">
+        <Grid Margin="16,14,16,12">
+
+            <!-- ===================== 背景层：3D 皮肤（主页正中央，融入背景；不支持缩放） ===================== -->
+            <Grid x:Name="SkinPreviewHost" Background="Transparent"
+                  MouseLeftButtonDown="SkinPreview_MouseLeftButtonDown"
+                  MouseLeftButtonUp="SkinPreview_MouseLeftButtonUp"
+                  MouseMove="SkinPreview_MouseMove"
+                  MouseRightButtonDown="SkinPreview_MouseRightButtonDown">
+                <Viewport3D x:Name="SkinViewport" ClipToBounds="True"
+                            RenderOptions.BitmapScalingMode="NearestNeighbor"
+                            RenderOptions.EdgeMode="Aliased">
+                    <Viewport3D.Camera>
+                        <PerspectiveCamera x:Name="SkinCamera" FieldOfView="40"
+                                           Position="0,0,168" LookDirection="0,0,-168"
+                                           UpDirection="0,1,0" />
+                    </Viewport3D.Camera>
+                    <ModelVisual3D x:Name="SkinModel" />
+                </Viewport3D>
+
+                <TextBlock x:Name="SkinEmptyText" Text="暂无皮肤" FontSize="13" Foreground="#9CA3AF"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                <!-- 模型正下方：旋转提示 + 皮肤库入口 -->
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,26">
+                    <Border Background="#E8F0FF" CornerRadius="{DynamicResource Radius6}" Padding="10,4" HorizontalAlignment="Center">
+                        <TextBlock Text="按住鼠标左右拖动即可旋转" FontSize="11" Foreground="{DynamicResource AccentBrush}" />
+                    </Border>
+                    <Button x:Name="SkinEntryBtn" Style="{StaticResource EntryButtonStyle}" Margin="0,12,0,0"
+                            HorizontalAlignment="Center" Padding="18,10" Click="OpenSkinLibrary_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconSparkles}" Width="18" Height="18" Stretch="Uniform"
+                                  Stroke="#4F46E5" StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                            <StackPanel Margin="9,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="皮肤库" FontSize="13" FontWeight="Medium" Foreground="#111827" />
+                                <TextBlock Text="3D 预览 · 换皮肤与披风" FontSize="11" Foreground="#9CA3AF"
+                                           Margin="0,1,0,0" />
+                            </StackPanel>
+                            <Path Data="{StaticResource IconChevronRight}" Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="#D1D5DB" StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center"
+                                  Margin="10,0,0,0" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ===================== 前景层：版本管理入口 / 更新公告 / 账户与启动 ===================== -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="280" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- 顶部左侧：更新公告（高度随文字自适应，长内容限高滚动） -->
+                <Border x:Name="NoticeCard" Grid.Column="0" Grid.Row="0" Style="{StaticResource CardStyle}" Width="238"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="2,0,0,8">
+                            <Path Data="{StaticResource IconMegaphone}" Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                            <TextBlock Text="公告" FontSize="13" FontWeight="SemiBold" Foreground="#374151"
+                                           Margin="7,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" MaxHeight="228">
+                            <StackPanel x:Name="NoticePanel" Margin="0,0,4,0" />
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!-- 主区域：左下角版本管理入口 -->
+                <Grid Grid.Column="0" Grid.Row="2">
+                    <Button x:Name="VersionEntryBtn" Grid.Column="0"
+                            Style="{StaticResource EntryButtonStyle}"
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                            Width="238" Margin="0,0,0,16"
+                            Click="OpenVersionManager_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconLayers}" Width="18" Height="18" Stretch="Uniform"
+                                  Stroke="#7C3AED" StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center" />
+                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="版本管理" FontSize="13" FontWeight="Medium" Foreground="#111827" />
+                                <TextBlock Text="Mod · 世界 · 导出" FontSize="11" Foreground="#9CA3AF"
+                                           Margin="0,1,0,0" />
+                            </StackPanel>
+                            <Path Data="{StaticResource IconChevronRight}" Width="14" Height="14" Stretch="Uniform"
+                                  Stroke="#D1D5DB" StrokeThickness="2" StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round" StrokeLineJoin="Round" VerticalAlignment="Center"
+                                  Margin="10,0,0,0" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <!-- 右侧：账户 + 启动（大卡片：向上延伸到底，头像居中，启动在底部） -->
+                <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+                      VerticalAlignment="Stretch" Margin="0,12,0,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!-- 隔板背景：半透明白 + 柔和阴影，营造通透质感 -->
+                    <Border Grid.RowSpan="3" Background="#C4FFFFFF" BorderBrush="#E5E7EB"
+                            BorderThickness="1" CornerRadius="{DynamicResource Radius20}"
+                            Effect="{StaticResource ShadowSoft}" />
+
+                    <!-- 头像账户区：位于卡片垂直中心 -->
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border x:Name="HomeAvatar" Width="80" Height="80" Background="Transparent"
+                                HorizontalAlignment="Center">
+                            <Border.Effect>
+                                <!-- 头像边缘一点点柔和阴影，去掉灰底后让头像从背景浮出 -->
+                                <DropShadowEffect x:Name="HomeAvatarShadow" BlurRadius="8" ShadowDepth="0"
+                                                  Color="#000000" Opacity="0.35" />
+                            </Border.Effect>
+                            <Grid>
+                                <!-- PCL2 风格头像：脸层（基础层）在下，帽子层（第二层）在上且大 7/6，中心对齐 -->
+                                <Path x:Name="HomeAvatarFallback" Data="{StaticResource IconUser}" Width="40" Height="40"
+                                      Stretch="Uniform" Stroke="#9CA3AF" StrokeThickness="2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Image x:Name="HomeAvatarFace" Width="60" Height="60" Stretch="Fill"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Visibility="Collapsed" />
+                                <Image x:Name="HomeAvatarHat" Width="70" Height="70" Stretch="Fill"
+                                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <TextBlock x:Name="CurrentUserText" Text="未添加账户" FontSize="15" FontWeight="SemiBold"
+                                   Foreground="#111827" Margin="0,10,0,0" TextAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" Width="182" />
+                        <Border x:Name="AccountTypePill" Background="#F3F4F6" CornerRadius="{DynamicResource Radius6}"
+                                Padding="8,2" Margin="0,6,0,0" HorizontalAlignment="Center">
+                            <TextBlock x:Name="AccountTypeText" Text="离线账户" FontSize="11" Foreground="#6B7280" />
+                        </Border>
+                        <TextBlock x:Name="CurrentVersionText" Text="未选择版本" FontSize="12" Foreground="#9CA3AF"
+                                   Margin="0,8,0,0" TextTrimming="CharacterEllipsis" TextAlignment="Center"
+                                   Width="182" />
+                    </StackPanel>
+
+                    <!-- 启动区：位于卡片底部 -->
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24">
+                        <Button x:Name="LaunchButton" Style="{StaticResource LaunchButtonStyle}" Height="48" Width="182"
+                                Margin="0,10,0,0" Click="Launch_Click" Content="启动游戏" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- 启动状态浮动面板：位于窗口上方居中（启动时出现，平时隐藏，不占布局） -->
+                <local:LaunchStatusView x:Name="_launchStatus" Grid.ColumnSpan="2" Grid.RowSpan="3"
+                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,14,0,0"
+                                        Panel.ZIndex="30" />
+
+                <!-- 右下角：游戏进程管理圆圈（叠加在账户卡片底部右下角） -->
+                <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                      Margin="0,0,16,16" ZIndex="10">
+                    <Button x:Name="ProcessButton" Width="48" Height="48" Click="ProcessButton_Click"
+                            ToolTip="游戏进程管理" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd" Width="48" Height="48" CornerRadius="{DynamicResource Radius24}"
+                                        Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="1" Opacity="0.18" />
+                                    </Border.Effect>
+                                    <Path Data="{StaticResource IconCpu}" Width="18" Height="18" Stretch="Uniform"
+                                          Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+                                        <Setter TargetName="Bd" Property="Background" Value="#F8FAFF" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <!-- 进程数量角标（独立于按钮模板，便于代码更新） -->
+                    <Border x:Name="Badge" Width="18" Height="18" CornerRadius="{DynamicResource Radius9}"
+                            Background="#EF4444" HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Margin="0,-2,-2,0" Visibility="Collapsed">
+                        <TextBlock x:Name="ProcessCountText" Text="0" FontSize="10" FontWeight="Bold"
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <Popup x:Name="ProcessPopup" IsOpen="False" Placement="Top"
+                           PlacementTarget="{Binding ElementName=ProcessButton}"
+                           AllowsTransparency="True" PopupAnimation="Fade" StaysOpen="False">
+                        <Border Background="{DynamicResource CardBackground}" BorderBrush="#E5E7EB" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius12}" Margin="0,0,0,6" Padding="10" MinWidth="240">
+                            <StackPanel>
+                                <TextBlock Text="运行中的游戏进程" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="#374151" Margin="6,2,0,8" />
+                                <StackPanel x:Name="ProcessListPanel" MinWidth="220" />
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
